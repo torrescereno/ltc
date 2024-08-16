@@ -1,0 +1,37 @@
+[
+  {
+    "id": "1",
+    "title": "Desarrollador de Software - RPA Senior",
+    "company": "Grant Thornton Chile",
+    "date": "sept 2021 - Presente",
+    "description": "Desarrollador de aplicaciones web con React y FastAPI, desarrollador de aplicaciones de escritorio con PySide6, y analista de datos utilizando Pandas y PySpark. Entre mis principales responsabilidades se encuentran la automatización de procesos contables, la optimización de tiempos de descarga de información, y el desarrollo de software personalizado para satisfacer las necesidades del cliente."
+  },
+  {
+    "id": "2",
+    "title": "RPA Developer",
+    "company": "Deloitte",
+    "date": "mar 2021, sept 2021",
+    "description": "Desarrollador de UiPath, enfocado principalmente en el soporte y mantenimiento de bots, así como en la refactorización de procesos existentes para integrarlos en la arquitectura de ReFramework. Mi labor incluyó la mejora continua de la eficiencia y fiabilidad de los procesos automatizados, asegurando que los bots funcionaran de manera óptima y se alinearan con las mejores prácticas de automatización."
+  },
+  {
+    "id": "3",
+    "title": "RPA Developer",
+    "company": "TacTech",
+    "date": "sep 2020, feb 2021",
+    "description": "Desarrollador de UiPath y Node.js. Creé una aplicación de chatbot de WhatsApp utilizando Node.js, diseñada para ejecutar procesos y recibir retroalimentación en tiempo real sobre el estado de los mismos. Además, desarrollé una solución RPA para la integración automática de información desde plataformas de marketplace, mejorando la eficiencia y precisión en la gestión de datos."
+  },
+  {
+    "id": "4",
+    "title": "RPA Developer",
+    "company": "APIUX",
+    "date": "nov 2019, ago 2020",
+    "description": "Desarrollador de Automation Anywhere v11, donde diseñé y desarrollé automatizaciones para procesos manuales en la plataforma SAP, logrando reducir los errores en conciliación e integración de información en más de un 80%. Además, formé parte de una célula ágil que integró practicantes, asumiendo la responsabilidad de facilitar su adaptación y compartir mi experiencia y conocimientos para asegurar su rápida integración y éxito en el equipo."
+  },
+  {
+    "id": "5",
+    "title": "Analista de sistema",
+    "company": "Accenture",
+    "date": "mar 2018, oct 2019",
+    "description": "Desarrollador en Automation Anywhere v11, con responsabilidades principales en el soporte de una plataforma .NET y la automatización del cierre de tickets en SalesForce. Durante mi tiempo en el equipo de Telefónica, brindé soporte a bots productivos y desarrollé un proceso clave dentro del flujo de portabilidad de clientes. Además, optimicé procesos de cobranza, alcanzando una eficiencia del 95%."
+  }
+]
