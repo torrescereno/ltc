@@ -1,0 +1,24 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { formatDate } from "../../utils";
+
+const { note } = Astro.props;
+
+interface Props {
+    note: CollectionEntry<"note">;
+}
+---
+
+<div class="flex justify-between" transition:name={note.slug}>
+    <div class="flex flex-col">
+        <a class="text-xl" href={`/notes/${note.slug}`}>{note.data.title}</a>
+        <span>
+            <time class="text-gray-600 text-sm mb-4">
+                {formatDate(note.data.pubDate)}
+            </time>
+        </span>
+    </div>
+    <div>
+        {note.data.tags.join(" - ")}
+    </div>
+</div>

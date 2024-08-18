@@ -1,0 +1,258 @@
+---
+title: "Spark"
+pubDate: 2024-08-16
+author: "LTC"
+tags: ["python", "pyspark"]
+slug: pyspark-notes
+---
+
+# PySpark SQL
+
+PySpark SQL es un módulo para trabajar con datos estructurados y semi-estructurados en PySpark. Algunas de sus funcionalidades
+
+## 1. Sesion
+
+```python
+sp: SparkSession = SparkSession.builder.appName("app").getOrCreate()
+
+sp.sparkContext.setLogLevel("ERROR")
+
+```
+
+## 2. Lectura de Datos - Schema
+
+PySpark SQL soporta la lectura de datos de varias fuentes. Ejemplo en CSV:
+
+```python
+# Dataset
+# https://www.kaggle.com/datasets/muhammadehsan000/paris-2024-summer-olympic-games-dataset
+
+# Estructura / Schema
+schema: StringType = StructType(
+    [
+        StructField("date", TimestampType(), True),
+        StructField("stage_code", StringType(), True),
+        StructField("event_code", StringType(), True),
+        StructField("event_name", StringType(), True),
+        StructField("event_stage", StringType(), True),
+        StructField("stage", StringType(), True),
+        StructField("stage_status", StringType(), True),
+        StructField("gender", StringType(), True),
+        StructField("discipline_name", StringType(), True),
+        StructField("discipline_code", StringType(), True),
+        StructField("venue", StringType(), True),
+        StructField("participant_code", StringType(), True),
+        StructField("participant_name", StringType(), True),
+        StructField("participant_type", StringType(), True),
+        StructField("participant_country_code", StringType(), True),
+        StructField("participant_country", StringType(), True),
+        StructField("rank", IntegerType(), True),
+        StructField("result", StringType(), True),
+        StructField("result_type", StringType(), True),
+        StructField("result_IRM", StringType(), True),
+        StructField("result_diff", StringType(), True),
+        StructField("qualification_mark", StringType(), True),
+        StructField("start_order", IntegerType(), True),
+        StructField("bib", StringType(), True)
+    ]
+)
+
+# Lectura de csv
+df: DataFrame = sp.read \
+                        .format("csv") \
+                        .option("header", True) \
+                        .schema(schema) \
+                        .load("data/results")
+
+# Inferir schema
+# df = sp.read.option("header", True).option("inferSchema", True).csv("data/results")
+
+df.count()
+
+# Tomar una muestra
+df = (
+    sp.read.format("csv")
+    .option("header", True)
+    .load("data/results")
+    .sample(0.1)
+)
+
+df.count()
+
+df.printSchema()
+```
+
+## 3. Consultas SQL
+
+Registrar un DataFrame como una vista temporal y ejecutar consultas SQL sobre él.
+
+```python
+# Registrar el DataFrame como una tabla temporal en SQL
+df.createOrReplaceTempView("jjoo")
+
+# Ejecutar una consulta SQL para seleccionar a todos los empleados de un departamento específico
+sp.sql("SELECT * FROM jjoo WHERE participant_country = 'Chile'").show(5)
+
+```
+
+## 4. Operaciones sobre Columnas
+
+Se pueden realizar operaciones como seleccionar, filtrar, agregar y transformar columnas de un DataFrame.
+
+### Filters
+
+```python
+# Participantes mujeres (filter)
+df.filter(df["participant_country"] == "Chile")\
+    .select("participant_name") \
+    .distinct() \
+    .filter(df["gender"] == "W") \
+    .count()
+
+
+# Participantes hombres (vectores)
+# WHERE utiliza la api de funciones que es más común en operaciones complejas y es más expresiva cuando se trabaja con múltiples condiciones o columnas
+
+df[df["participant_country"] == "Chile"] \
+    .select("participant_name") \
+    .distinct().where(F.col("gender") == "M").count()
+
+
+df.where(
+    (F.col("participant_country") == "Chile") &
+    ((F.col("gender") == "O") | (F.col("gender") == "X"))
+).count()
+
+# Agregar una columna
+
+df.withColumn("upper", F.upper(df.participant_name)).withColumn(
+    "lower", F.lower(df.participant_name)
+).show(1)
+
+# Renombrar una columna
+
+df.withColumnRenamed("date", "fecha").show(1)
+
+```
+
+## 5. Agrupaciones y Agregaciones
+
+PySpark SQL permite realizar operaciones de agrupación y agregación de datos.
+
+```python
+# Groups
+
+# ¿Cuántos eventos diferentes se llevaron a cabo en cada disciplina?
+
+df.groupBy("discipline_name").agg(F.countDistinct("event_name").alias("unique_event_count")).show(5)
+
+# ¿Cuál fue la distribución de los eventos según el género de los participantes?
+
+df.groupBy("gender").agg(F.countDistinct("event_code").alias("event_count")).show()
+
+# ¿Cuáles son los países con mayor cantidad de participantes?
+
+df.groupBy("participant_country").agg(F.countDistinct("participant_name").alias("count")).orderBy(F.desc("count")).show(5)
+
+# ¿Qué eventos tuvieron el mayor número de participantes?
+
+df.groupBy("event_name", "discipline_name").agg(F.countDistinct("participant_name").alias("count")).orderBy(F.desc("count")).show(5)
+
+```
+
+## 6. Pivot
+
+```python
+# Cuántos participantes de cada género (gender) han competido en cada país (participant_country).
+
+df.groupBy("participant_country").pivot("gender").agg(F.count("participant_code")).orderBy(F.asc("participant_country")).show(5)
+```
+
+## Performance
+
+### Cache
+
+Por defecto, un DataFrame no se almacena en ningún lugar y se vuelve a calcular cuando es necesario.
+El almacenamiento en caché de un DataFrame puede mejorar el rendimiento si se accede a él muchas veces.
+
+Hay dos maneras de hacer esto:
+
+1- El método de caché de DataFrame establece el modo de persistencia del DataFrame al valor predeterminado (Memoria y Disco).
+
+2- Para tener más control puedes usar persistir. persistir requiere un StorageLevel. persistir se usa más comúnmente para controlar el factor de replicación.
+
+```python
+from pyspark import StorageLevel
+
+# Copias
+df1 = df[df["participant_country"] == "Chile"]
+df2 = df[df["participant_country"] == "Chile"]
+df3 = df[df["participant_country"] == "Chile"]
+df4 = df[df["participant_country"] == "Chile"]
+
+print("Nivel de almacenamiento predeterminado (NONE).")
+print(df.storageLevel)
+
+print("\ncache()")
+df1.cache()
+print(df1.storageLevel)
+
+print("\nDISK_ONLY")
+df2.persist(storageLevel=StorageLevel.DISK_ONLY)
+print(df2.storageLevel)
+
+print("\nMEMORY_ONLY")
+df3.persist(storageLevel=StorageLevel.MEMORY_ONLY)
+print(df3.storageLevel)
+
+print("\nMEMORY_AND_DISK")
+df4.persist(storageLevel=StorageLevel.MEMORY_AND_DISK)
+print(df4.storageLevel)
+
+# Unpersist
+df.unpersist()
+df1.unpersist()
+df2.unpersist()
+df3.unpersist()
+df4.unpersist()
+```
+
+### Plan de ejecución
+
+El plan lógico optimizado muestra la secuencia de transformaciones que PySpark aplica al DataFrame antes de convertirlo en un plan físico (es decir, antes de ejecutar realmente las operaciones).
+
+El plan físico muestra cómo PySpark ejecutará realmente las operaciones en el clúster.
+
+```python
+df = df.groupBy("participant_code").count()
+
+execution_plan = str(df.explain(mode="cost"))
+print(execution_plan)
+```
+
+### Repartition
+
+El método .repartition() se utiliza para redistribuir los datos de un DataFrame en un número específico de particiones. Las particiones son subconjuntos de datos que se distribuyen a través de los nodos de un clúster para permitir un procesamiento paralelo eficiente.
+
+El método foreachPartition permite aplicar una función personalizada a cada partición de datos en un DataFrame o RDD. Esto es útil cuando necesitas realizar operaciones específicas en cada partición, como filtrar, procesar o contar registros.
+
+```python
+def number_in_partition(rows):
+    try:
+        first_row = next(rows)
+        partition_size = sum(1 for x in rows) + 1
+        partition_value = first_row.participant_code
+        print(f"Partition {partition_value} has {partition_size} records")
+    except StopIteration:
+        print("Empty partition")
+
+df.repartition(20, "participant_code").foreachPartition(number_in_partition)
+```
+
+## Referencias
+
+[cartershanklin/pyspark-cheatsheet](https://github.com/cartershanklin/pyspark-cheatsheet)
+
+[kevinschaich/pyspark-cheatsheet](https://github.com/kevinschaich/pyspark-cheatsheet)
+
+[PySpark](https://spark.apache.org/docs/latest/api/python/reference/index.html)

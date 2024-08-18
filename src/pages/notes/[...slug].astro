@@ -1,0 +1,47 @@
+---
+import Header from "../../components/Header.astro";
+import Layout from "../../layouts/Layout.astro";
+
+// con getStaticPaths
+export const prerender = true;
+
+import type { GetStaticPaths } from "astro";
+
+import { getCollection } from "astro:content";
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection("note");
+  return posts.map((post) => ({ params: { slug: post.slug }, props: post }));
+}) satisfies GetStaticPaths;
+
+const post = Astro.props;
+
+// con getEntry
+// import { getEntry } from "astro:content";
+
+// const { slug } = Astro.params;
+
+// if (slug === undefined) {
+//   throw new Error("Slug is required");
+// }
+// const post = await getEntry("note", slug);
+
+// if (post === undefined) {
+//   return Astro.redirect("/");
+// }
+
+const { Content } = await post.render();
+---
+
+<Layout title={post.data.title}>
+  <main class="min-h-screen bg-gray-800">
+    <div class="p-4 text-gray-100 max-w-2xl m-auto">
+      <Header />
+      <div class="mx-auto pt-4 pb-4">
+        <div class="prose prose-invert lg:prose-xl" transition:name={post.slug}>
+          <Content />
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

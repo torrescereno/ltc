@@ -1,8 +1,9 @@
 ---
 import SpeedInsights from "@vercel/speed-insights/astro";
+import { ViewTransitions } from "astro:transitions";
 
 interface Props {
-    title: string;
+  title: string;
 }
 
 const { title } = Astro.props;
@@ -10,17 +11,19 @@ const { title } = Astro.props;
 
 <!doctype html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="description" content="CV L.T.C" />
-        <meta name="viewport" content="width=device-width" />
-        <link rel="icon" href="/favicon.png" type="image/png" sizes="16x16" />
-        <title>{title}</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Web LTC" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="16x16" />
+    <title>{title}</title>
 
-        <SpeedInsights />
-    </head>
-    <body>
-        <slot />
-    </body>
+    <ViewTransitions />
+
+    <SpeedInsights />
+  </head>
+  <body>
+    <slot />
+  </body>
 </html>
 <style is:global></style>
