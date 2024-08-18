@@ -10,7 +10,7 @@ export default defineConfig({
     tailwind(),
     mdx({
       syntaxHighlight: "shiki",
-      shikiConfig: { theme: "night-owl" },
+      shikiConfig: { theme: "dracula" },
     }),
   ],
   output: "server",

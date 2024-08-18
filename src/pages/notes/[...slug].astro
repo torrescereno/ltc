@@ -10,8 +10,8 @@ import type { GetStaticPaths } from "astro";
 import { getCollection } from "astro:content";
 
 export const getStaticPaths = (async () => {
-  const posts = await getCollection("note");
-  return posts.map((post) => ({ params: { slug: post.slug }, props: post }));
+    const posts = await getCollection("note");
+    return posts.map((post) => ({ params: { slug: post.slug }, props: post }));
 }) satisfies GetStaticPaths;
 
 const post = Astro.props;
@@ -34,14 +34,17 @@ const { Content } = await post.render();
 ---
 
 <Layout title={post.data.title}>
-  <main class="min-h-screen bg-gray-800">
-    <div class="p-4 text-gray-100 max-w-2xl m-auto">
-      <Header />
-      <div class="mx-auto pt-4 pb-4">
-        <div class="prose prose-invert lg:prose-xl" transition:name={post.slug}>
-          <Content />
+    <main class="min-h-screen">
+        <div class="p-4 text-gray-100 max-w-2xl m-auto">
+            <Header />
+            <div class="mx-auto pt-4 pb-4">
+                <div
+                    class="prose prose-invert lg:prose-xl"
+                    transition:name={post.slug}
+                >
+                    <Content />
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  </main>
+    </main>
 </Layout>
