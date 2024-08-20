@@ -1,7 +1,7 @@
 ---
-import Header from "../../components/Header.astro";
-import AnimatedBar from "../../components/AnimatedBar.tsx"
-import Layout from "../../layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import AnimatedBar from "@/components/AnimatedBar.tsx";
+import Layout from "@/layouts/Layout.astro";
 
 // con getStaticPaths
 export const prerender = true;
@@ -36,12 +36,15 @@ const { Content } = await post.render();
 
 <Layout title={post.data.title}>
     <main class="min-h-screen">
-        <AnimatedBar client:visible/>
+        <AnimatedBar client:visible />
         <div class="p-4 text-gray-100 max-w-2xl m-auto">
             <Header />
             <div class="mx-auto pb-4">
                 <div class="prose prose-invert lg:prose-xl">
-                    <a href="https://github.com/torrescereno/spark-notes" target="_blank">
+                    <a
+                        href="https://github.com/torrescereno/spark-notes"
+                        target="_blank"
+                    >
                         <h2 class="text-3xl">{post.data.title}</h2>
                     </a>
                     <Content />
@@ -63,4 +66,3 @@ const { Content } = await post.render();
         transform-origin: 0%;
     }
 </style>
-
