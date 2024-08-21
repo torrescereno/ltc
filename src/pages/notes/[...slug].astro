@@ -1,6 +1,7 @@
 ---
-import Header from "@/components/Header.astro";
 import AnimatedBar from "@/components/AnimatedBar.tsx";
+import Header from "@/components/Header.astro";
+import Article from "@/components/Article.astro";
 import Layout from "@/layouts/Layout.astro";
 
 // con getStaticPaths
@@ -30,26 +31,14 @@ const post = Astro.props;
 // if (post === undefined) {
 //   return Astro.redirect("/");
 // }
-
-const { Content } = await post.render();
 ---
 
 <Layout title={post.data.title}>
     <main class="min-h-screen">
         <AnimatedBar client:visible />
-        <div class="p-4 text-gray-100 max-w-2xl m-auto">
+        <div class="text-gray-100 max-w-2xl m-auto">
             <Header />
-            <div class="mx-auto pb-4">
-                <div class="prose prose-invert lg:prose-xl">
-                    <a
-                        href="https://github.com/torrescereno/spark-notes"
-                        target="_blank"
-                    >
-                        <h2 class="text-3xl">{post.data.title}</h2>
-                    </a>
-                    <Content />
-                </div>
-            </div>
+            <Article post={post} />
         </div>
     </main>
 </Layout>
