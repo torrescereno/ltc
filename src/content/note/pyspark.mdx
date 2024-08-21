@@ -166,7 +166,7 @@ df.groupBy("event_name", "discipline_name").agg(F.countDistinct("participant_nam
 df.groupBy("participant_country").pivot("gender").agg(F.count("participant_code")).orderBy(F.asc("participant_country")).show(5)
 ```
 
-## Performance
+## 7. Performance
 
 ### Cache
 
@@ -177,7 +177,7 @@ Hay dos maneras de hacer esto:
 
 1- El método de caché de DataFrame establece el modo de persistencia del DataFrame al valor predeterminado (Memoria y Disco).
 
-2- Para tener más control puedes usar persistir. persistir requiere un StorageLevel. persistir se usa más comúnmente para controlar el factor de replicación.
+2- Para tener más control puedes usar persist que requiere un StorageLevel. Se usa más comúnmente para controlar el factor de replicación.
 
 ```python
 from pyspark import StorageLevel
