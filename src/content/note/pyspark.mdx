@@ -10,7 +10,7 @@ PySpark SQL es un módulo para trabajar con datos estructurados
 y semi-estructurados en PySpark
 
 Para estos ejemplos se usó el siguiente
-[dataser](https://www.kaggle.com/datasets/muhammadehsan000/paris-2024-summer-olympic-games-dataset)
+[dataset](https://www.kaggle.com/datasets/muhammadehsan000/paris-2024-summer-olympic-games-dataset)
 
 ## 1. Sesion
 
@@ -273,6 +273,25 @@ def number_in_partition(rows):
 df.repartition(20, "participant_code") \
     .foreachPartition(number_in_partition)
 ```
+
+### RDD
+
+Un RDD (Resilient Distributed Dataset) es una estructura de datos distribuida de elementos
+que se pueden procesar en paralelo en un clúster.
+Los RDDs permiten realizar operaciones de manera distribuida y tolerante a fallos,
+lo que es clave para procesar grandes volúmenes de datos.
+
+1- Distribuido: Los RDDs se dividen en particiones que se distribuyen a lo largo de diferentes nodos en un clúster.
+
+2- Inmutable: Una vez creado, un RDD no se puede modificar.
+Sin embargo, se pueden crear nuevos RDDs a partir de operaciones en uno existente.
+
+3- Tolerante a fallos: Spark puede reconstruir automáticamente un RDD perdido debido a fallos en el hardware o software,
+utilizando el linaje de transformación que llevó a la creación del RDD original.
+
+4- Transformaciones y Acciones: Los RDDs soportan dos tipos de operaciones:
+transformaciones (como map, filter) que crean un nuevo RDD a partir de uno existente,
+y acciones (como collect, count) que devuelven un resultado al driver programando y ejecutando las transformaciones definidas.
 
 ## Referencias
 
