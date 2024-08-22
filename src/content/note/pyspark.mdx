@@ -10,7 +10,7 @@ PySpark SQL es un módulo para trabajar con datos estructurados
 y semi-estructurados en PySpark
 
 Para estos ejemplos se usó el siguiente
-[dataset](https://www.kaggle.com/datasets/muhammadehsan000/paris-2024-summer-olympic-games-dataset)
+[dataset](https://github.com/torrescereno/spark-notes/tree/main/data)
 
 ## 1. Sesion
 
@@ -169,7 +169,6 @@ df.groupBy("event_name", "discipline_name") \
 ```python
 # Cuántos participantes de cada género (gender)
 # han competido en cada país (participant_country).
-
 df.groupBy("participant_country") \
     .pivot("gender") \
     .agg(F.count("participant_code")) \
