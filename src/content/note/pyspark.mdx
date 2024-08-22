@@ -139,6 +139,8 @@ df.withColumnRenamed("date", "fecha").show(1)
 ## 5. Agrupaciones y Agregaciones
 
 ```python
+# ¿Cuántos eventos diferentes se
+# llevaron a cabo en cada disciplina?
 df.groupBy("discipline_name") \
     .agg(F.countDistinct("event_name") \
     .alias("unique_event_count")).show(5)
