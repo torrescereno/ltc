@@ -6,26 +6,25 @@ tags: ["python", "pyspark"]
 slug: pyspark-notes
 ---
 
-PySpark SQL es un módulo para trabajar con datos estructurados y semi-estructurados en PySpark. Algunas de sus funcionalidades
+PySpark SQL es un módulo para trabajar con datos estructurados
+y semi-estructurados en PySpark
+
+Para estos ejemplos se usó el siguiente
+[dataser](https://www.kaggle.com/datasets/muhammadehsan000/paris-2024-summer-olympic-games-dataset)
 
 ## 1. Sesion
 
 ```python
-sp: SparkSession = SparkSession.builder.appName("app").getOrCreate()
+sp = SparkSession.builder.appName("app").getOrCreate()
 
 sp.sparkContext.setLogLevel("ERROR")
-
 ```
 
 ## 2. Lectura de Datos - Schema
 
-PySpark SQL soporta la lectura de datos de varias fuentes. Ejemplo en CSV:
-
 ```python
-# Dataset
-# https://www.kaggle.com/datasets/muhammadehsan000/paris-2024-summer-olympic-games-dataset
-
 # Estructura / Schema
+
 schema: StringType = StructType(
     [
         StructField("date", TimestampType(), True),
@@ -56,6 +55,7 @@ schema: StringType = StructType(
 )
 
 # Lectura de csv
+
 df: DataFrame = sp.read \
                         .format("csv") \
                         .option("header", True) \
@@ -63,44 +63,36 @@ df: DataFrame = sp.read \
                         .load("data/results")
 
 # Inferir schema
-# df = sp.read.option("header", True).option("inferSchema", True).csv("data/results")
 
-df.count()
+# df = sp.read.option("header", True) \
+#                   .option("inferSchema", True) \
+#                   .csv("data/results")
 
-# Tomar una muestra
+# Seleccionar una muestra de los datos
+
 df = (
     sp.read.format("csv")
     .option("header", True)
     .load("data/results")
     .sample(0.1)
 )
-
-df.count()
-
-df.printSchema()
 ```
 
 ## 3. Consultas SQL
 
-Registrar un DataFrame como una vista temporal y ejecutar consultas SQL sobre él.
+Para realizar consultas en SQL se debe crear una _TempView_
 
 ```python
-# Registrar el DataFrame como una tabla temporal en SQL
 df.createOrReplaceTempView("jjoo")
 
-# Ejecutar una consulta SQL para seleccionar a todos los empleados de un departamento específico
 sp.sql("SELECT * FROM jjoo WHERE participant_country = 'Chile'").show(5)
-
 ```
 
 ## 4. Operaciones sobre Columnas
 
-Se pueden realizar operaciones como seleccionar, filtrar, agregar y transformar columnas de un DataFrame.
-
 ### Filters
 
 ```python
-# Participantes mujeres (filter)
 df.filter(df["participant_country"] == "Chile")\
     .select("participant_name") \
     .distinct() \
@@ -108,8 +100,9 @@ df.filter(df["participant_country"] == "Chile")\
     .count()
 
 
-# Participantes hombres (vectores)
-# WHERE utiliza la api de funciones que es más común en operaciones complejas y es más expresiva cuando se trabaja con múltiples condiciones o columnas
+# WHERE utiliza la api de funciones, que es más común
+# en operaciones complejas y es más expresiva cuando
+# se trabaja con múltiples condiciones o columnas
 
 df[df["participant_country"] == "Chile"] \
     .select("participant_name") \
@@ -123,61 +116,75 @@ df.where(
 
 # Agregar una columna
 
-df.withColumn("upper", F.upper(df.participant_name)).withColumn(
-    "lower", F.lower(df.participant_name)
-).show(1)
+df.withColumn("upper", F.upper(df.participant_name)) \
+    .withColumn("lower", F.lower(df.participant_name)).show(1)
 
 # Renombrar una columna
 
 df.withColumnRenamed("date", "fecha").show(1)
-
 ```
 
 ## 5. Agrupaciones y Agregaciones
 
-PySpark SQL permite realizar operaciones de agrupación y agregación de datos.
-
 ```python
-# Groups
+# Agrupar
 
-# ¿Cuántos eventos diferentes se llevaron a cabo en cada disciplina?
+# ¿Cuántos eventos diferentes se
+# llevaron a cabo en cada disciplina?
+df.groupBy("discipline_name") \
+    .agg(F.countDistinct("event_name") \
+    .alias("unique_event_count")).show(5)
 
-df.groupBy("discipline_name").agg(F.countDistinct("event_name").alias("unique_event_count")).show(5)
-
-# ¿Cuál fue la distribución de los eventos según el género de los participantes?
-
-df.groupBy("gender").agg(F.countDistinct("event_code").alias("event_count")).show()
+# ¿Cuál fue la distribución de los
+# eventos según el género de los participantes?
+df.groupBy("gender") \
+    .agg(F.countDistinct("event_code") \
+    .alias("event_count")).show()
 
 # ¿Cuáles son los países con mayor cantidad de participantes?
-
-df.groupBy("participant_country").agg(F.countDistinct("participant_name").alias("count")).orderBy(F.desc("count")).show(5)
+df.groupBy("participant_country") \
+    .agg(F.countDistinct("participant_name") \
+    .alias("count")) \
+    .orderBy(F.desc("count")).show(5)
 
 # ¿Qué eventos tuvieron el mayor número de participantes?
-
-df.groupBy("event_name", "discipline_name").agg(F.countDistinct("participant_name").alias("count")).orderBy(F.desc("count")).show(5)
+df.groupBy("event_name", "discipline_name") \
+    .agg(F.countDistinct("participant_name") \
+    .alias("count")) \
+    .orderBy(F.desc("count")).show(5)
 
 ```
 
 ## 6. Pivot
 
 ```python
-# Cuántos participantes de cada género (gender) han competido en cada país (participant_country).
+# Cuántos participantes de cada género (gender)
+# han competido en cada país (participant_country).
 
-df.groupBy("participant_country").pivot("gender").agg(F.count("participant_code")).orderBy(F.asc("participant_country")).show(5)
+df.groupBy("participant_country") \
+    .pivot("gender") \
+    .agg(F.count("participant_code")) \
+    .orderBy(F.asc("participant_country")).show(5)
 ```
 
 ## 7. Performance
 
-### Cache
+### Caché
 
-Por defecto, un DataFrame no se almacena en ningún lugar y se vuelve a calcular cuando es necesario.
-El almacenamiento en caché de un DataFrame puede mejorar el rendimiento si se accede a él muchas veces.
+Por defecto, un DataFrame no se almacena en ningún lugar
+y se vuelve a calcular cuando es necesario.
+
+El almacenamiento en caché de un DataFrame
+puede mejorar el rendimiento si se accede a él muchas veces.
 
 Hay dos maneras de hacer esto:
 
-1- El método de caché de DataFrame establece el modo de persistencia del DataFrame al valor predeterminado (Memoria y Disco).
+1- El método de caché de DataFrame establece el
+modo de persistencia del DataFrame al valor predeterminado (Memoria y Disco).
 
-2- Para tener más control puedes usar persist que requiere un StorageLevel. Se usa más comúnmente para controlar el factor de replicación.
+2- Para tener más control puedes usar
+_persist_ que requiere un _StorageLevel_.
+Se usa más comúnmente para controlar el factor de replicación.
 
 ```python
 from pyspark import StorageLevel
@@ -217,9 +224,13 @@ df4.unpersist()
 
 ### Plan de ejecución
 
-El plan lógico optimizado muestra la secuencia de transformaciones que PySpark aplica al DataFrame antes de convertirlo en un plan físico (es decir, antes de ejecutar realmente las operaciones).
+_El plan lógico_ optimizado muestra la secuencia de transformaciones
+que PySpark aplica al DataFrame antes de
+convertirlo en un plan físico
+(es decir, antes de ejecutar realmente las operaciones).
 
-El plan físico muestra cómo PySpark ejecutará realmente las operaciones en el clúster.
+_El plan físico_ muestra cómo PySpark
+ejecutará realmente las operaciones en el clúster.
 
 ```python
 df = df.groupBy("participant_code").count()
@@ -230,9 +241,15 @@ print(execution_plan)
 
 ### Repartition
 
-El método .repartition() se utiliza para redistribuir los datos de un DataFrame en un número específico de particiones. Las particiones son subconjuntos de datos que se distribuyen a través de los nodos de un clúster para permitir un procesamiento paralelo eficiente.
+El método _.repartition()_ se utiliza para redistribuir los datos de un DataFrame
+en un número específico de particiones.
+Las particiones son subconjuntos de datos que se distribuyen a través
+de los nodos de un clúster para permitir un procesamiento paralelo eficiente.
 
-El método foreachPartition permite aplicar una función personalizada a cada partición de datos en un DataFrame o RDD. Esto es útil cuando necesitas realizar operaciones específicas en cada partición, como filtrar, procesar o contar registros.
+El método _foreachPartition_ permite aplicar una función personalizada a cada partición
+de datos en un DataFrame o RDD.
+Esto es útil cuando necesitas realizar operaciones específicas en cada partición,
+como filtrar, procesar o contar registros.
 
 ```python
 def number_in_partition(rows):
@@ -244,7 +261,8 @@ def number_in_partition(rows):
     except StopIteration:
         print("Empty partition")
 
-df.repartition(20, "participant_code").foreachPartition(number_in_partition)
+df.repartition(20, "participant_code") \
+    .foreachPartition(number_in_partition)
 ```
 
 ## Referencias
