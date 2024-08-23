@@ -7,6 +7,7 @@ const notesCollection = defineCollection({
     pubDate: z.date(),
     author: z.string(),
     tags: z.array(z.string()),
+    url: z.string(),
   }),
 });
 
