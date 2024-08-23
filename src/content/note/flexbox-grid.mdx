@@ -1,0 +1,348 @@
+---
+title: "Flexbox & Grid"
+pubDate: 2024-08-22
+author: "LTC"
+tags: ["css"]
+slug: flexbox-grid
+url: https://developer.mozilla.org/es/docs/Web/CSS/CSS_grid_layout/Relationship_of_grid_layout_with_other_layout_methods
+---
+
+### [Flexbox](https://developer.mozilla.org/es/docs/Learn/CSS/CSS_layout/Flexbox)
+
+Flexbox es ideal para diseñar layouts unidimensionales,
+es decir, que se organizan en una sola dirección, ya sea fila o columna.
+Es especialmente útil para alinear y distribuir elementos en un contenedor,
+incluso si el tamaño de estos elementos es desconocido o cambia dinámicamente.
+
+### Elementos claves
+
+**display: flex;** Activa el modelo Flexbox en el contenedor padre.
+
+**flex-direction** Define la dirección en la que se colocan los elementos hijos (row, row-reverse, column, column-reverse).
+
+**justify-content** Alinea los elementos a lo largo del eje principal (flex-start, flex-end, center, space-between, space-around, space-evenly).
+
+**align-items** Alinea los elementos a lo largo del eje transversal (perpendicular al principal) (flex-start, flex-end, center, baseline, stretch).
+
+### Ejemplo
+
+```html
+<!doctype html>
+<html lang="es">
+  <head>
+    <style>
+      .flex-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f4f4f4;
+        padding: 20px;
+      }
+
+      .flex-item {
+        background-color: #61dafb;
+        padding: 20px;
+        margin: 10px;
+        color: white;
+        text-align: center;
+        font-size: 18px;
+      }
+    </style>
+    <title>Ejemplo Flexbox</title>
+  </head>
+  <body>
+    <div class="flex-container">
+      <div class="flex-item">Item 1</div>
+      <div class="flex-item">Item 2</div>
+      <div class="flex-item">Item 3</div>
+    </div>
+  </body>
+</html>
+```
+
+### [Grid](https://developer.mozilla.org/es/docs/Web/CSS/CSS_grid_layout)
+
+Grid es ideal para crear layouts bidimensionales, es decir,
+que se organizan en filas y columnas.
+Es extremadamente poderoso y flexible,
+permitiendo controlar tanto la alineación de los elementos como su tamaño y posicionamiento en una cuadrícula.
+
+### Elementos claves
+
+**display: grid;** Activa el modelo Grid en el contenedor padre.
+
+**grid-template-columns y grid-template-rows** Definen el tamaño de las columnas y filas.
+
+**grid-gap** Define el espacio entre las filas y columnas.
+
+**grid-column y grid-row** Permiten a un elemento ocupar más de una columna o fila.
+
+### Ejemplo
+
+```html
+<!doctype html>
+<html lang="es">
+  <head>
+    <style>
+      .grid-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 20px;
+        background-color: #f4f4f4;
+        padding: 20px;
+      }
+
+      .grid-item {
+        background-color: #61dafb;
+        padding: 20px;
+        color: white;
+        text-align: center;
+        font-size: 18px;
+      }
+
+      .grid-item:nth-child(1) {
+        grid-column: span 2;
+      }
+
+      .grid-item:nth-child(4) {
+        grid-row: span 2;
+      }
+    </style>
+    <title>Ejemplo Grid</title>
+  </head>
+  <body>
+    <div class="grid-container">
+      <div class="grid-item">Item 1</div>
+      <div class="grid-item">Item 2</div>
+      <div class="grid-item">Item 3</div>
+      <div class="grid-item">Item 4</div>
+      <div class="grid-item">Item 5</div>
+      <div class="grid-item">Item 6</div>
+    </div>
+  </body>
+</html>
+```
+
+## Propiedades
+
+### gap
+
+Define el espacio entre los elementos en un contenedor flex o grid, sin necesidad de usar márgenes en los elementos individuales.
+Tiene soporte en Flexbox y Grid
+
+**Flexbox**
+
+```css
+.flex-container {
+  display: flex;
+  gap: 20px; /* Espacio entre los elementos flex */
+}
+```
+
+**Grid**
+
+```css
+.grid-container {
+  display: grid;
+  gap: 20px; /* Espacio entre filas y columnas */
+}
+```
+
+### grid-template-columns y grid-template-rows
+
+Permiten definir la estructura de la cuadrícula en términos de columnas y filas.
+Se puede especificar tamaños fijos, proporcionales o automáticos.
+
+```css
+.grid-container {
+  display: grid;
+  /* Tres columnas con diferentes proporciones */
+  grid-template-columns: 1fr 2fr 1fr;
+  /* Dos filas, la primera se ajusta automáticamente 
+  y la segunda tiene una altura fija */
+  grid-template-rows: auto 100px;
+}
+```
+
+### align-items y justify-content
+
+Controlan la alineación de los elementos hijos dentro de un contenedor flex o grid.
+Funciona tanto con Flexbox como con Grid.
+
+**Flexbox**
+
+```css
+.flex-container {
+  display: flex;
+  /* Alinea elementos verticalmente al centro del contenedor */
+  align-items: center;
+  /* Distribuye elementos uniformemente 
+  a lo largo del contenedor */
+  justify-content: space-around;
+}
+```
+
+**Grid**
+
+```css
+.grid-container {
+  display: grid;
+  /* Alinea elementos al inicio del 
+  contenedor en el eje vertical */
+  align-items: start;
+  /* Alinea elementos al final del 
+  contenedor en el eje horizontal */
+  justify-content: end;
+}
+```
+
+### align-self y justify-self
+
+Controlan la alineación individual de un solo elemento dentro de un contenedor flex o grid.
+Son más específicos que align-items y justify-content. Funciona tanto con Flexbox como con Grid.
+
+```css
+.grid-item {
+  /* Alinea este único elemento horizontalmente al centro */
+  justify-self: center;
+  /* Alinea este único elemento verticalmente al final */
+  align-self: end;
+}
+```
+
+### flex-grow, flex-shrink, y flex-basis
+
+Son propiedades exclusivas de Flexbox
+que permiten controlar cómo los elementos hijos crecen,
+se encogen y establecen su tamaño base dentro de un contenedor flex.
+
+```css
+.flex-item {
+  /* Permite que el elemento crezca 
+  para llenar el espacio disponible */
+  flex-grow: 1;
+  /* Permite que el elemento se encoja 
+  si el contenedor es demasiado pequeño */
+  flex-shrink: 1;
+  /* Establece un tamaño base de 100px 
+  antes de aplicar flex-grow o flex-shrink */
+  flex-basis: 100px;
+}
+```
+
+### grid-auto-flow
+
+Controla cómo se colocan automáticamente los elementos dentro de la cuadrícula
+si no se han especificado explícitamente las ubicaciones.
+Específica si los elementos deben fluir en filas o columnas. Exclusivo de Grid.
+
+```css
+.grid-container {
+  display: grid;
+  /* Los elementos se colocarán automáticamente en columnas */
+  grid-auto-flow: column;
+}
+```
+
+### place-items y place-content
+
+Son propiedades abreviadas que combinan align-items/justify-items
+y align-content/justify-content respectivamente, para alinear los elementos en ambas direcciones.
+Funciona tanto con Flexbox como con Grid.
+
+```css
+.grid-container {
+  display: grid;
+  /* Alinea elementos al centro tanto 
+  en el eje horizontal como vertical */
+  place-items: center;
+  /* Distribuye el contenido de la 
+  cuadrícula con espacio entre los elementos */
+  place-content: space-between;
+}
+```
+
+### grid-area
+
+Permite asignar explícitamente un área dentro de la cuadrícula a un elemento. Funciona en conjunto con grid-template-areas.
+Exclusivo de Grid.
+
+```css
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    "header header header"
+    "sidebar main main"
+    "footer footer footer";
+}
+
+.grid-item-header {
+  /* Este elemento ocupa el área definida como "header" */
+  grid-area: header;
+}
+
+.grid-item-sidebar {
+  /* Este elemento ocupa el área definida como "sidebar" */
+  grid-area: sidebar;
+}
+```
+
+### order
+
+Controla el orden de los elementos dentro de un contenedor flex o grid,
+permitiendo cambiar el orden visual sin alterar el orden en el DOM. Funciona tanto con Flexbox como con Grid.
+
+```css
+.flex-item-1 {
+  /* Este elemento aparecerá segundo, 
+  aunque esté definido primero en el HTML */
+  order: 2;
+}
+
+.flex-item-2 {
+  /* Este elemento aparecerá primero, 
+  aunque esté definido segundo en el HTML */
+  order: 1;
+}
+```
+
+### grid-template-areas
+
+Permite nombrar áreas dentro de la cuadrícula y posicionar elementos en esas áreas,
+facilitando la creación de layouts complejos. Exclusivo de Grid.
+
+```css
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    "header header header"
+    "sidebar main main"
+    "footer footer footer";
+}
+
+.grid-item-header {
+  grid-area: header;
+}
+
+.grid-item-sidebar {
+  grid-area: sidebar;
+}
+
+.grid-item-main {
+  grid-area: main;
+}
+
+.grid-item-footer {
+  grid-area: footer;
+}
+```
+
+### Comparación Flexbox vs Grid
+
+- Flexbox: Mejor para layouts unidimensionales (una dirección a la vez, ya sea fila o columna).
+- Grid: Mejor para layouts bidimensionales, con control sobre filas y columnas al mismo tiempo.
+
+Ambos sistemas se pueden combinar para aprovechar lo mejor de cada uno,
+dependiendo de las necesidades del layout.
+Flexbox es ideal para componentes más simples o para alinear elementos en un solo eje,
+mientras que Grid es perfecto para layouts más complejos y control bidimensional.
