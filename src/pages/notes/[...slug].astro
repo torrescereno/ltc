@@ -12,8 +12,8 @@ import type { GetStaticPaths } from "astro";
 import { getCollection } from "astro:content";
 
 export const getStaticPaths = (async () => {
-    const posts = await getCollection("note");
-    return posts.map((post) => ({ params: { slug: post.slug }, props: post }));
+  const posts = await getCollection("note");
+  return posts.map((post) => ({ params: { slug: post.slug }, props: post }));
 }) satisfies GetStaticPaths;
 
 const post = Astro.props;
@@ -34,24 +34,24 @@ const post = Astro.props;
 ---
 
 <Layout title={post.data.title}>
-    <main class="min-h-screen">
-        <AnimatedBar client:visible />
-        <div class="text-gray-100 max-w-2xl m-auto">
-            <Header />
-            <Article post={post} />
-        </div>
-    </main>
+  <main class="min-h-screen">
+    <AnimatedBar client:visible />
+    <div class="text-gray-100 max-w-2xl m-auto">
+      <Header />
+      <Article post={post} />
+    </div>
+  </main>
 </Layout>
 
 <style>
-    .progress-bar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 10px;
-        background: #f5f5f5;
-        transform: scaleX(0);
-        transform-origin: 0%;
-    }
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background: #f5f5f5;
+    transform: scaleX(0);
+    transform-origin: 0%;
+  }
 </style>

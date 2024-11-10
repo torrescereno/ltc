@@ -5,30 +5,30 @@ import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 
 const posts: CollectionEntry<"note">[] = (await getCollection("note")).sort(
-    (a: CollectionEntry<"note">, b: CollectionEntry<"note">) =>
-        b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  (a: CollectionEntry<"note">, b: CollectionEntry<"note">) =>
+    b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 ---
 
 <section class="text-gray-300 mx-auto">
-    <h2 class="text-2xl border-b-4 mb-4">Notas</h2>
-    {
-        posts.map((post) => {
-            return (
-                <div class="flex justify-between pb-4">
-                    <div class="flex flex-col">
-                        <a href={`/notes/${post.slug}`}>
-                            <h2 class="text-xl">{post.data.title}</h2>
-                        </a>
-                        <span>
-                            <time class="text-gray-600 text-sm mb-4">
-                                {formatDate(post.data.pubDate)}
-                            </time>
-                        </span>
-                    </div>
-                    <div>{post.data.tags.join(" - ")}</div>
-                </div>
-            );
-        })
-    }
+  <h2 class="text-2xl border-b-4 mb-4">Notas</h2>
+  {
+    posts.map((post) => {
+      return (
+        <div class="flex justify-between pb-4">
+          <div class="flex flex-col">
+            <a href={`/notes/${post.slug}`}>
+              <h2 class="text-xl">{post.data.title}</h2>
+            </a>
+            <span>
+              <time class="text-gray-600 text-sm mb-4">
+                {formatDate(post.data.pubDate)}
+              </time>
+            </span>
+          </div>
+          <div>{post.data.tags.join(" - ")}</div>
+        </div>
+      );
+    })
+  }
 </section>

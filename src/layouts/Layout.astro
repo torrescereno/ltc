@@ -1,9 +1,10 @@
 ---
 import SpeedInsights from "@vercel/speed-insights/astro";
+import ScrollToTop from "@/components/ScrollToTop.tsx";
 import { ViewTransitions } from "astro:transitions";
 
 interface Props {
-    title: string;
+  title: string;
 }
 
 const { title } = Astro.props;
@@ -11,30 +12,28 @@ const { title } = Astro.props;
 
 <!doctype html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="description" content="Web LTC" />
-        <meta name="viewport" content="width=device-width" />
-        <link
-            rel="icon"
-            href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗒️</text></svg>"
-        />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Web LTC" />
+    <meta name="viewport" content="width=device-width" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🗒️</text></svg>"
+    />
+    <title>{title}</title>
 
-        <title>{title}</title>
-
-        <ViewTransitions />
-
-        <SpeedInsights />
-    </head>
-    <body>
-        <slot />
-    </body>
+    <ViewTransitions />
+    <SpeedInsights />
+  </head>
+  <body>
+    <slot />
+    <ScrollToTop client:visible />
+  </body>
 </html>
 <style is:global>
-    html {
-        font-family: system-ui, sans-serif;
-        background: #1a1a1a;
-        scrollbar-width: none;
-    }
+  html {
+    font-family: system-ui, sans-serif;
+    background: #1a1a1a;
+    scrollbar-width: none;
+  }
 </style>
-
