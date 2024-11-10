@@ -28,7 +28,6 @@ const ScrollToTop = () => {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    cursor: "pointer",
     transition: "opacity 0.3s ease-in-out",
     fontSize: "1rem",
     opacity: isVisible ? 1 : 0,
