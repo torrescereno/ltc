@@ -1,0 +1,39 @@
+---
+import type { MarkdownHeading } from "astro";
+
+interface Props {
+  headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+
+const filteredHeadings = headings.filter((heading) => heading.depth <= 2);
+---
+
+<nav>
+  <h2 class="mb-2">
+    <a href="">Tabla de conceptos</a>
+  </h2>
+  <ul>
+    {
+      filteredHeadings.map((heading) => (
+        <li>
+          <a href={`#${heading.slug}`}>{heading.text}</a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 300px;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 1em;
+    border-right: 1px solid #ccc;
+  }
+</style>
