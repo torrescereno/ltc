@@ -12,7 +12,7 @@ const filteredHeadings = headings.filter((heading) => heading.depth <= 2);
 
 <nav>
   <h2 class="mb-2">
-    <a href="">Tabla de conceptos</a>
+    <a href="#" id="toc-link">Tabla de conceptos</a>
   </h2>
   <ul>
     {
@@ -37,3 +37,12 @@ const filteredHeadings = headings.filter((heading) => heading.depth <= 2);
     border-right: 1px solid #f5f5f5;
   }
 </style>
+
+<script>
+  document?.getElementById("toc-link")?.addEventListener("click", function (e) {
+    e.preventDefault();
+    window.scrollTo({
+      top: 0,
+    });
+  });
+</script>
