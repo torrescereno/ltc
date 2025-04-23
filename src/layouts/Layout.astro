@@ -1,7 +1,7 @@
 ---
-import SpeedInsights from "@vercel/speed-insights/astro";
 import ScrollToTop from "@/components/ScrollToTop.tsx";
-import { ViewTransitions } from "astro:transitions";
+import SpeedInsights from "@vercel/speed-insights/astro";
+import { ClientRouter } from "astro:transitions";
 
 interface Props {
   title: string;
@@ -22,7 +22,7 @@ const { title } = Astro.props;
     />
     <title>{title}</title>
 
-    <ViewTransitions />
+    <ClientRouter />
     <SpeedInsights />
   </head>
   <body>
