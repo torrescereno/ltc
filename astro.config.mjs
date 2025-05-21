@@ -17,13 +17,8 @@ export default defineConfig({
     preact(),
   ],
   output: "server",
-  adapter: vercel({
-    webAnalytics: {
-      enabled: true,
-    },
-  }),
+  adapter: vercel(),
   redirects: {
     "/": "/notes",
   },
 });
-
